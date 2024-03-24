@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+//import 'package:flutter/material.dart';
 
 class Tweet {
   final String id;
@@ -9,6 +8,7 @@ class Tweet {
   final List<String>? tags;
   final String? image;
   final String? imageUrl;
+  bool liked;
 
   Tweet({
     required this.id,
@@ -17,20 +17,21 @@ class Tweet {
     required this.text,
     this.tags,
     this.image,
+    this.liked = false,
   }) : imageUrl = image == null ? null : 'https://twitterlike.shrp.dev/assets/$image';
 
   factory Tweet.fromJson(Map<String, dynamic> json) {
-  final List<dynamic> tagsJson = json['tags'] as List<dynamic>? ?? [];
-  final List<String> tags = tagsJson.whereType<String>().toList();
-  final String? image = json['image'] as String?;
+    final List<dynamic> tagsJson = json['tags'] as List<dynamic>? ?? [];
+    final List<String> tags = tagsJson.whereType<String>().toList();
+    final String? image = json['image'] as String?;
 
-  return Tweet(
-    id: json['id'] as String,
-    userCreated: json['user_created'] as String,
-    dateCreated: DateTime.parse(json['date_created'] as String),
-    text: json['text'] as String,
-    tags: tags.isNotEmpty ? tags : null,
-    image: image,
+    return Tweet(
+      id: json['id'] as String,
+      userCreated: json['user_created'] as String,
+      dateCreated: DateTime.parse(json['date_created'] as String),
+      text: json['text'] as String,
+      tags: tags.isNotEmpty ? tags : null,
+      image: image,
     );
   }
 }

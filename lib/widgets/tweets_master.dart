@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import '../../models/tweets.dart';
 import 'tweet_preview.dart';
-import 'dart:convert';
 import 'tweet_details.dart';
 
-class TweetsMaster extends StatelessWidget {
+class TweetsMaster extends StatefulWidget {
   final List<Tweet> tweets;
 
   const TweetsMaster({Key? key, required this.tweets}) : super(key: key);
 
   @override
+  _TweetsMasterState createState() => _TweetsMasterState();
+}
+
+class _TweetsMasterState extends State<TweetsMaster> {
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: tweets.length,
+      itemCount: widget.tweets.length,
       itemBuilder: (context, index) {
-        final tweet = tweets[index];
+        final tweet = widget.tweets[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: GestureDetector(
             onTap: () {
-              // Handle tweet tap, e.g., navigate to tweet details screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TweetDetails(tweet: tweet)),
+              );
             },
             child: Card(
               elevation: 5,
@@ -29,7 +36,7 @@ class TweetsMaster extends StatelessWidget {
               child: Column(
                 children: [
                   Hero(
-                    tag: 'tweet-${tweet.id}', // Use a unique tag for each tweet
+                    tag: 'tweet-${tweet.id}',
                     child: TweetPreview(tweet: tweet),
                   ),
                   Padding(
@@ -38,9 +45,14 @@ class TweetsMaster extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.favorite),
+                          icon: Icon(
+                            tweet.liked ? Icons.favorite : Icons.favorite_border,
+                            color: tweet.liked ? Colors.red : null,
+                          ),
                           onPressed: () {
-                            // Handle like action
+                            setState(() {
+                              tweet.liked = !tweet.liked;
+                            });
                           },
                         ),
                         IconButton(
@@ -48,7 +60,7 @@ class TweetsMaster extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) =>  TweetDetails(tweet: tweet,)),
+                              MaterialPageRoute(builder: (context) => TweetDetails(tweet: tweet)),
                             );
                           },
                         ),
